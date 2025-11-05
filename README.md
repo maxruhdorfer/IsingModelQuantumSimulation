@@ -15,45 +15,62 @@ $$
 where $S_i^z$ and $S_i^x$ are the spin projections in the $z$ and $x$ direction, respectively. $J$ is the interaction energy which we take to be $J=1$ in the following, i.e. $h$ is measured in units of $J$ and $t$ in units of $1/J$.
 
 We can express this Hamiltonian in terms of Pauli matrices in order to turn it into an operator that can be acted on $N$ qubit states which model the spins $|s_0\cdots s_{N-1}\rangle$
+
 $$
 H = - \sum_{i=0}^{N-2} Z_i Z_{i+1} - h \sum_{i=0}^{N-1} X_i\,,
 $$
+
 where this notation means that the Pauli matrices $Z_i$ and $X_i$ are applied to the $i$-th qubit. A more accurate representation includes the tensor products with the identity matrices applied to the remaining spins. As an explicit example, let us consider $N=3$. In this case the Hamiltonian takes the explicit form
+
 $$
 H = -Z_1 \otimes Z_2 \otimes I  -  I \otimes Z_2 \otimes Z_3 - h\left( X_1\otimes I \otimes I + I \otimes X_2 \otimes I + I\otimes I \otimes X_3\right)\,,
 $$
+
 where $I$ is the identity matrix.
 
 Finally, let us define the magnetization $M$ as the spin sum in the $z$ direction
+
 $$
 M = \frac{1}{N}\sum_{i=0}^{N-1} \langle S_i^z\rangle\,.
 $$
 
 ## Quantum Hamiltonian Simulation
 The time evoluation of a quantum state $|\psi\rangle$ under the Hamiltonian $H$ is given by the Schr\"odinger equation (setting $\hbar = 1$)
+
 $$
 \frac{d|\psi\rangle}{dt} = -i H |\psi\rangle\,.
 $$
+
 The solution to this is
+
 $$
 |\psi (t)\rangle = e^{-i H t} |\psi (0)\rangle\,.
 $$
+
 For a Hamiltonian that is a tensor product of Pauli matrices $H = \alpha\, \sigma_1 \otimes \sigma_2 \otimes \cdots \otimes \sigma_n$ this can easily be implemented through simple quantum gates. Via unitary operators we can diagonalize the Hamiltonian, i.e. we can express it in terms of the third Pauli matrix only, i.e.
+
 $$
 e^{-i t H} = (U_1 \otimes U_2 \otimes \cdots \otimes U_n) e^{-i\alpha t\, Z_1\otimes Z_2\otimes \cdots \otimes Z_n} (U_1^\dagger \otimes U_2^\dagger \otimes \cdots \otimes U_n^\dagger)\,,
 $$
+
 where $Z_i$ is the third Pauli matrix acting on the $i$-th qubit. Using that
+
 $$
 e^{-i\alpha t\, Z_1\otimes Z_2\otimes \cdots \otimes Z_n} |s_1 \cdots s_n\rangle = e^{-i\alpha t (-1)^{\oplus_i s_i}}|s_1 \cdots s_n\rangle\,,
 $$
+
 this can be implemented by constructing $s_1 \oplus s_2 \oplus \cdots \oplus s_n$ in the last qubit with CNOT gates, followed by a $R_z(-\alpha t)$ rotation on the last qubit and the same sequence of CNOT gates in the reverse order to restore the initial state. If the sequence of Pauli matrices contains an identity, the qubit that the identity acts on can simply be ignored. The $U_i$ are easily found using the identities
+
 $$
 Y = S H Z H^\dagger S^\dagger\,,\quad X = H Z H^\dagger\,.
 $$
+
 As a last step, let us discuss how to simulate Hamiltonians which are a sum of terms of tensor products of Pauli matrices $H= \sum_{i=1}^p H_i$. In that case we can use the Suzuki-Trotter decomposition
+
 $$
 e^{-it H} = \left( \prod_{i=1}^m e^{-it H_i / p} \right)^p + \mathcal{O}\left(\frac{(\nu t)^2}{p}\right)\,,
 $$
+
 where $\nu = \max_j \{||H_j||\}$.
 
 The magnetization for $N=10$ using the quantum simulation for different values of $p$, compared to the exact numerical simulation is shown in the plot below
